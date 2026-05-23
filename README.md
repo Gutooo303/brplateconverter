@@ -1,16 +1,16 @@
 # BRPlateConverter API
 
-Simple API for converting old Brazilian license plates to the Mercosul standard, built with Node.js and Express.
+API for converting Brazilian license plates between the old standard and the Mercosul standard, built with Node.js and Express.
 
 ---
 
 # Technologies Used
 
-* Node.js
-* Express
-* dotenv
-* cors
-* express-rate-limit
+- Node.js
+- Express
+- dotenv
+- cors
+- express-rate-limit
 
 ---
 
@@ -20,6 +20,8 @@ Simple API for converting old Brazilian license plates to the Mercosul standard,
 brplateconverter/
 ├── node_modules/
 ├── src/
+│   ├── routes/
+│   │   └── routes.js
 │   └── translate.js
 ├── .env.example
 ├── .gitignore
@@ -48,7 +50,7 @@ cd brplateconverter
 Install dependencies:
 
 ```bash
-npm run build
+npm install
 ```
 
 ---
@@ -60,7 +62,8 @@ In `.env.example` file in the project root:
 ```env
 PORT=3000 // Port example
 ```
-**Inportant**: remember to rename the .env.example to .env.
+
+**Important**: remember to rename the `.env.example` file to `.env`.
 
 ---
 
@@ -69,13 +72,26 @@ PORT=3000 // Port example
 Default mode:
 
 ```bash
-node index.js
+npm start
 ```
 
-Or using nodemon:
+Development mode:
 
 ```bash
-npx nodemon index.js
+npm run dev
+```
+
+---
+
+# Scripts
+
+```json
+{
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  }
+}
 ```
 
 ---
@@ -98,24 +114,33 @@ GET /
 
 ---
 
-## Convert Old Plate to Mercosul Standard
+## Automatic Plate Conversion
 
 ```http
-GET /translate/:plate
+GET /convert/:plate
 ```
+
+The API automatically detects:
+- Old Brazilian plate
+- Mercosul plate
+
+and converts to the opposite format.
 
 ---
 
-## Example Request
+# Example Requests
+
+## Old Plate → Mercosul
 
 ```http
-GET /translate/ABC1234
+GET /convert/ABC1234
 ```
 
-### Example Response
+### Response
 
 ```json
 {
+  "type": "old",
   "placaOriginal": "ABC1234",
   "placaMercosul": "ABC1C34"
 }
@@ -123,51 +148,55 @@ GET /translate/ABC1234
 
 ---
 
-## Convert Old Plate to Mercosul Standard
+## Mercosul → Old Plate
 
 ```http
-GET /translate-reverse/:plate
+GET /convert/ABC1C34
 ```
 
----
-
-## Example Request
-
-```http
-GET /translate-reverse/ABC1C34
-```
-
-### Example Response
+### Response
 
 ```json
 {
-  "placaOriginal": "ABC1C34",
-  "placaMercosul": "ABC1234"
+  "type": "mercosul",
+  "placaMercosul": "ABC1C34",
+  "placaAntiga": "ABC1234"
 }
 ```
 
 ---
 
-# Security
+# Supported Formats
 
-The API uses:
+## Old Brazilian Plate
 
-* Rate Limit (`100` requests per IP)
-* Plate format validation
-* Environment variables with dotenv
-* CORS enabled
+```txt
+ABC1234
+```
+
+Regex:
+
+```js
+/^[A-Z]{3}[0-9]{4}$/
+```
+
+---
+
+## Mercosul Plate
+
+```txt
+ABC1C34
+```
+
+Regex:
+
+```js
+/^[A-Z]{3}[0-9][A-J][0-9]{2}$/
+```
 
 ---
 
 # Plate Conversion Rules
-
-Example:
-
-```txt
-ABC1234 → ABC1C34
-```
-
-Conversion rule:
 
 | Number | Letter |
 | ------ | ------ |
@@ -184,28 +213,14 @@ Conversion rule:
 
 ---
 
-# Reverse Plate Conversion Rules
+# Security
 
-Example:
+The API uses:
 
-```txt
-ABC1C34 → ABC1234
-```
-
-Conversion rule:
-
-| Letter | Number |
-| ------ | ------ |
-| A      | 0      |
-| B      | 1      |
-| C      | 2      |
-| D      | 3      |
-| E      | 4      |
-| F      | 5      |
-| G      | 6      |
-| H      | 7      |
-| I      | 8      |
-| J      | 9      |
+- Rate Limit (`100` requests per IP)
+- Plate format validation
+- Environment variables with dotenv
+- CORS enabled
 
 ---
 
@@ -219,8 +234,6 @@ Conversion rule:
   "express-rate-limit": "^7.x"
 }
 ```
-
----
 
 # Author
 

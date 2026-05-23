@@ -1,11 +1,11 @@
-// Placa antiga para Mercosul
+// Old plate to Mercosul standard
 function OldPlateToMerc(plate) {
     try {
         if (!plate) {
             throw new Error("Plate not provided");
         }
 
-        plate = plate.toUpperCase();
+        plate = plate.toUpperCase().replace(/[^A-Z0-9]/g, "");
 
         const regex = /^[A-Z]{3}[0-9]{4}$/;
 
@@ -39,14 +39,14 @@ function OldPlateToMerc(plate) {
     }
 }
 
-// Placa Mercosul para antiga
+// Mercosul plate to old plate standard
 function MercToOldPlate(plate) {
     try {
         if (!plate) {
             throw new Error("Plate not provided");
         }
 
-        plate = plate.toUpperCase();
+        plate = plate.toUpperCase().replace(/[^A-Z0-9]/g, "");;
 
         const regex = /^[A-Z]{3}[0-9][A-J][0-9]{2}$/;
 
@@ -79,7 +79,33 @@ function MercToOldPlate(plate) {
         };
     }
 }
+
+// Detect plate type function
+function detectPlateType(plate) {
+    if (!plate) {
+        return {
+            error: "Plate not provided"
+        };
+    }
+
+    plate = plate.toUpperCase().replace(/[^A-Z0-9]/g, "");;
+
+    const oldPlateRegex = /^[A-Z]{3}[0-9]{4}$/;
+    const mercPlateRegex = /^[A-Z]{3}[0-9][A-J][0-9]{2}$/;
+
+    if (oldPlateRegex.test(plate)) {
+        return "old";
+    } else if (mercPlateRegex.test(plate)) {
+        return "mercosul";
+    } else {
+        return {
+            error: "Invalid plate format"
+        };
+    }
+}
+
 module.exports = {
     translatePlate: OldPlateToMerc,
-    translatePlateReverse: MercToOldPlate
+    translatePlateReverse: MercToOldPlate,
+    detectPlateType: detectPlateType
 };
