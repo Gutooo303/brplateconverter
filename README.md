@@ -21,7 +21,7 @@ brplateconverter/
 ├── node_modules/
 ├── src/
 │   └── translate.js
-├── .env
+├── .env.example
 ├── .gitignore
 ├── index.js
 ├── package.json
@@ -36,7 +36,7 @@ brplateconverter/
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/brplateconverter.git
+git clone https://github.com/Gutooo303/brplateconverter.git
 ```
 
 Enter the project folder:
@@ -55,11 +55,12 @@ npm run build
 
 # Environment Variables
 
-Create a `.env` file in the project root:
+In `.env.example` file in the project root:
 
 ```env
-PORT=8080
+PORT=3000 // Port example
 ```
+**Inportant**: remember to rename the .env.example to .env.
 
 ---
 
@@ -116,7 +117,32 @@ GET /translate/ABC1234
 ```json
 {
   "placaOriginal": "ABC1234",
-  "placaMercosul": "ABC1B34"
+  "placaMercosul": "ABC1C34"
+}
+```
+
+---
+
+## Convert Old Plate to Mercosul Standard
+
+```http
+GET /translate-reverse/:plate
+```
+
+---
+
+## Example Request
+
+```http
+GET /translate-reverse/ABC1C34
+```
+
+### Example Response
+
+```json
+{
+  "placaOriginal": "ABC1C34",
+  "placaMercosul": "ABC1234"
 }
 ```
 
@@ -138,7 +164,7 @@ The API uses:
 Example:
 
 ```txt
-ABC1234 → ABC1D34
+ABC1234 → ABC1C34
 ```
 
 Conversion rule:
@@ -155,6 +181,31 @@ Conversion rule:
 | 7      | H      |
 | 8      | I      |
 | 9      | J      |
+
+---
+
+# Reverse Plate Conversion Rules
+
+Example:
+
+```txt
+ABC1C34 → ABC1234
+```
+
+Conversion rule:
+
+| Letter | Number |
+| ------ | ------ |
+| A      | 0      |
+| B      | 1      |
+| C      | 2      |
+| D      | 3      |
+| E      | 4      |
+| F      | 5      |
+| G      | 6      |
+| H      | 7      |
+| I      | 8      |
+| J      | 9      |
 
 ---
 
